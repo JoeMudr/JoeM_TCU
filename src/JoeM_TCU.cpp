@@ -58,7 +58,7 @@ void MCP2515_ISR(){
 void loop() {
 
     if (CAN_MSGAVAIL == CAN.checkReceive()) {         // check if data is oming
-        if(Debug)Serial_clear();
+        if(Debug){Serial_clear();}
         CAN_read();
         OUT_handle();
         CAN_Heartbeat();
@@ -120,7 +120,7 @@ void CAN_Heartbeat(){
     msgBuff[5] = 0x00;
     msgBuff[6] = 0x00;
     msgBuff[7] = 0x00;
-    CAN.sendMsgBuf(0xBA, 0, 8, msgBuff);         // [ToDo] Change ID?
+    CAN.sendMsgBuf(0x7FF, 0, 8, msgBuff);         // [ToDo] Change ID?
     if(Debug)Serial.println("Heartbeat send.");
     if(Debug == 2){
         Serial.println(!digitalRead(REL_Pump)+1);
@@ -150,12 +150,14 @@ void OUT_handle(byte AllOFF){
 }
 
 void enterSleepMode(){
-    attachInterrupt(0, MCP2515_ISR, FALLING); // start interrupt
     OUT_handle(1); // turn everything off
+    /*
+    attachInterrupt(0, MCP2515_ISR, FALLING); // start interrupt
     if(Debug)Serial.println("going to sleep");
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);
     sleep_enable();
     sleep_mode();
     sleep_disable();
     detachInterrupt(0);
+    */
 }
